@@ -3,9 +3,16 @@
   "version": "0.1.0",
   "description": "Lambda@Edge function for adding geo location headers in viewer responses",
   "main": "build/index.js",
+  "config": {
+    "bucket": "",
+    "path": "",
+    "region": "us-east-1",
+    "function-name": ""
+  },
   "scripts": {
+    "build-zip": "zip -r lambda.zip ./node_modules/ ./build/index.js ./dbs/",
     "tsc": "tsc",
-    "test": "tsc && lambda-local -l build/index.js -e tests/event.json"
+    "test": "lambda-local -l build/index.js -e tests/event.json"
   },
   "author": "Robert O'Rourke",
   "license": "GPL-2.0-or-later",

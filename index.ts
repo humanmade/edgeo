@@ -26,11 +26,11 @@ exports.handler = async ( event: CloudFrontResponseEvent, context: Context, call
 	} ];
 	headers[ 'x-client-location-latitude' ] = [ {
 		key: 'X-Client-Location-Latitude',
-		value: String( result && result.location && result.location.latitude ) || '',
+		value: String( ( result && result.location && result.location.latitude ) || '' ),
 	} ];
 	headers[ 'x-client-location-longitude' ] = [ {
 		key: 'X-Client-Location-Longitude',
-		value: String( result && result.location && result.location.longitude ) || '',
+		value: String( ( result && result.location && result.location.longitude ) || '' ),
 	} ];
 	headers[ 'x-client-location-postalcode' ] = [ {
 		key: 'X-Client-Location-PostalCode',
