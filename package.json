@@ -1,6 +1,6 @@
 {
   "name": "edgeo",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Lambda@Edge function for adding geo location headers in viewer responses",
   "main": "build/index.js",
   "config": {
