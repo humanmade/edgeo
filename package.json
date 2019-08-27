@@ -7,16 +7,18 @@
     "bucket": "",
     "path": "",
     "region": "us-east-1",
-    "function-name": ""
+    "function-name": "edgeo",
+    "db": "GeoLite2-City.mmdb"
   },
   "scripts": {
-    "build-zip": "zip -r lambda.zip ./node_modules/ ./build/index.js ./dbs/",
+    "build-zip": "rm -rf node_modules && npm i --production && zip -r lambda.zip ./node_modules/ ./build/index.js",
     "tsc": "tsc",
-    "test": "lambda-local -l build/index.js -e tests/event.json"
+    "test": "tsc && lambda-local --envfile .env -t 360 -l build/index.js -e tests/event.json"
   },
   "author": "Robert O'Rourke",
   "license": "GPL-2.0-or-later",
   "dependencies": {
+    "aws-sdk": "^2.518.0",
     "maxmind": "^2.12.0"
   },
   "devDependencies": {
