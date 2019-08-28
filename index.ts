@@ -1,5 +1,6 @@
 import fs from 'fs';
-import { request } from 'http';
+import http from 'http';
+import https from 'https';
 import { promisify } from 'util';
 import { CloudFrontResponseEvent, Context, Callback, CloudFrontHeaders } from 'aws-lambda';
 
@@ -30,11 +31,12 @@ const access = promisify(fs.access);
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
 
-const fetch = (url: string): Promise<string> => new Promise( (resolve, reject) => {
-	const req = request(url, (res) => {
+const fetch = (url: string): Promise<string> => new Promise((resolve, reject) => {
+	const protocol = url.match(/^https/) ? https : http;
+	const req = protocol.request(url, res => {
 		let data = '';
 		res.setEncoding('utf8');
-		res.on('data', (chunk) => {
+		res.on('data', (chunk: string) => {
 			data = `${data}${chunk}`;
 		});
 		res.on('end', () => {
