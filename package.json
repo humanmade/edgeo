@@ -3,13 +3,6 @@
   "version": "0.2.0",
   "description": "Lambda@Edge function for adding geo location headers in viewer responses",
   "main": "build/index.js",
-  "config": {
-    "bucket": "",
-    "path": "",
-    "region": "us-east-1",
-    "function-name": "edgeo",
-    "db": "GeoLite2-City.mmdb"
-  },
   "scripts": {
     "build-zip": "rm -rf node_modules && npm i --production && zip -r lambda.zip ./node_modules/ ./build/index.js",
     "tsc": "tsc",
@@ -17,13 +10,9 @@
   },
   "author": "Robert O'Rourke",
   "license": "GPL-2.0-or-later",
-  "dependencies": {
-    "maxmind": "^2.12.0"
-  },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.31",
     "@types/node": "^12.7.2",
-    "aws-sdk": "^2.518.0",
     "lambda-local": "^1.6.3",
     "typescript": "^3.5.3"
   }
