@@ -78,43 +78,43 @@ const lookupIp = async (ip: string): Promise<IPData> => {
 
 const setHeaders = (headers: CloudFrontHeaders, data: IPData): CloudFrontHeaders => {
 	headers['x-client-location-timezone'] = [{
-		key: 'X-Client-Location-Timezone',
+		key: 'x-client-location-timezone',
 		value: data.timezone || '',
 	}];
 	headers['x-client-location-contintent'] = [{
-		key: 'X-Client-Location-Continent',
+		key: 'x-client-location-continent',
 		value: data.continentCode || '',
 	}];
 	headers['x-client-location-country'] = [{
-		key: 'X-Client-Location-Country',
+		key: 'x-client-location-country',
 		value: data.countryCode || '',
 	}];
 	headers['x-client-location-city'] = [{
-		key: 'X-Client-Location-City',
+		key: 'x-client-location-city',
 		value: data.city || '',
 	}];
 	headers['x-client-location-latitude'] = [{
-		key: 'X-Client-Location-Latitude',
+		key: 'x-client-location-latitude',
 		value: String(data.lat || ''),
 	}];
 	headers['x-client-location-longitude'] = [{
-		key: 'X-Client-Location-Longitude',
+		key: 'x-client-location-longitude',
 		value: String(data.lon || ''),
 	}];
 	headers['x-client-location-postalcode'] = [{
-		key: 'X-Client-Location-PostalCode',
+		key: 'x-client-location-postalCode',
 		value: data.zip || '',
 	}];
 	headers['x-client-location-region'] = [{
-		key: 'X-Client-Location-Region',
+		key: 'x-client-location-region',
 		value: data.region || '',
 	}];
 	headers['x-client-location-currency'] = [{
-		key: 'X-Client-Location-Currency',
+		key: 'x-client-location-currency',
 		value: data.currency || '',
 	}];
 	headers['x-client-location-mobile'] = [{
-		key: 'X-Client-Location-Mobile',
+		key: 'x-client-location-mobile',
 		value: data.mobile ? '1' : '0',
 	}];
 	return headers;
