@@ -1,31 +1,107 @@
 Edgeo
 =====
 
-A Lambda@Edge function for adding Geo Location headers to response headers.
+A Lambda function for fetching Geo Location data by IP.
 
-Designed for use with the "viewer response" CloudFront event it is powered by the free [MaxMind GeoLite2 GeoIP database](https://dev.maxmind.com/geoip/geoip2/geolite2/).
-
+Powered by the free [MaxMind GeoLite2 GeoIP database](https://dev.maxmind.com/geoip/geoip2/geolite2/) and [node-maxmind](https://github.com/runk/node-maxmind).
 
 ## Output
 
-The Lambda function will add the following headers to responses:
+As an example the IP address `185.93.2.163` will yield:
 
-- `X-Client-Geo-TimeZone`: eg. "Europe/London"
-- `X-Client-Geo-Continent`: one of
-  - AF - Africa
-  - AN - Antarctica
-  - AS - Asia
-  - EU - Europe
-  - NA - North America
-  - OC - Oceania
-  - SA - South America
-- `X-Client-Geo-Country`: [ISO-3166-1](https://en.wikipedia.org/wiki/ISO_3166-1) 2 letter country code
-- `X-Client-Geo-City`: English name of the city if found
-- `X-Client-Geo-Latitude`: Approximate latitude
-- `X-Client-Geo-Longitude`: Approximate longitude
-- `X-Client-Geo-PostalCode`: Approximate postal code
-- `X-Client-Geo-Region`: [ISO-3166-2](https://en.wikipedia.org/wiki/ISO_3166-2) 2-3 letter country subdivision code
-- `X-Client-Geo-EU`: Value is 1 if the country is in the European Union, otherwise 0
+```json
+{
+  "city": {
+    "geoname_id": 2988507,
+    "names": {
+      "de": "Paris",
+      "en": "Paris",
+      "es": "París",
+      "fr": "Paris",
+      "ja": "パリ",
+      "pt-BR": "Paris",
+      "ru": "Париж",
+      "zh-CN": "巴黎"
+    }
+  },
+  "continent": {
+    "code": "EU",
+    "geoname_id": 6255148,
+    "names": {
+      "de": "Europa",
+      "en": "Europe",
+      "es": "Europa",
+      "fr": "Europe",
+      "ja": "ヨーロッパ",
+      "pt-BR": "Europa",
+      "ru": "Европа",
+      "zh-CN": "欧洲"
+    }
+  },
+  "country": {
+    "geoname_id": 3017382,
+    "is_in_european_union": true,
+    "iso_code": "FR",
+    "names": {
+      "de": "Frankreich",
+      "en": "France",
+      "es": "Francia",
+      "fr": "France",
+      "ja": "フランス共和国",
+      "pt-BR": "França",
+      "ru": "Франция",
+      "zh-CN": "法国"
+    }
+  },
+  "location": {
+    "accuracy_radius": 100,
+    "latitude": 48.9335,
+    "longitude": 2.3661,
+    "time_zone": "Europe/Paris"
+  },
+  "postal": {
+    "code": "93200"
+  },
+  "registered_country": {
+    "geoname_id": 3077311,
+    "is_in_european_union": true,
+    "iso_code": "CZ",
+    "names": {
+      "de": "Tschechien",
+      "en": "Czechia",
+      "es": "República Checa",
+      "fr": "République tchèque",
+      "ja": "チェコ共和国",
+      "pt-BR": "Tchéquia",
+      "ru": "Чешская Республика",
+      "zh-CN": "捷克共和国"
+    }
+  },
+  "subdivisions": [
+    {
+      "geoname_id": 3012874,
+      "iso_code": "IDF",
+      "names": {
+        "de": "Île-de-France",
+        "en": "Île-de-France",
+        "es": "Isla de Francia",
+        "fr": "Île-de-France",
+        "pt-BR": "Ilha de França"
+      }
+    },
+    {
+      "geoname_id": 2968815,
+      "iso_code": "75",
+      "names": {
+        "de": "Paris",
+        "en": "Paris",
+        "es": "Paris",
+        "fr": "Paris"
+      }
+    }
+  ]
+}
+```
 
 ## Usage
 
@@ -36,7 +112,7 @@ After cloning this repo you will need to do the following:
 2. `npm run tsc`
 3. `npm run build-zip`
 
-You will then have a `lambda.zip` file ready to be uploaded to AWS. The file should be ~6mb and can be uploaded through the AWS console.
+You will then have a `lambda.zip` file ready to be uploaded to AWS. The file should be ~60kb and can be uploaded through the AWS console.
 
 When configuring the lambda function use the following settings:
 
@@ -74,4 +150,4 @@ EDGEO_DB=<database file name>
 
 ## Roadmap
 
-- Support additional headers for ISP, Connection type, anonymous IP
+- Support additional results for ISP, Connection type, anonymous IP

@@ -18,12 +18,12 @@
   "author": "Robert O'Rourke",
   "license": "GPL-2.0-or-later",
   "dependencies": {
-    "aws-sdk": "^2.518.0",
     "maxmind": "^2.12.0"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.31",
     "@types/node": "^12.7.2",
+    "aws-sdk": "^2.518.0",
     "lambda-local": "^1.6.3",
     "typescript": "^3.5.3"
   }

@@ -1,7 +1,7 @@
 import fs from 'fs';
 import aws from 'aws-sdk';
 import maxmind, { CityResponse } from 'maxmind';
-import { CloudFrontResponseEvent, Context, Callback } from 'aws-lambda';
+import { APIGatewayEvent, Context, Callback } from 'aws-lambda';
 
 // Get db path from env vars.
 const bucket: string = process.env.EDGEO_BUCKET || '';
@@ -23,8 +23,8 @@ const fetchDb = (callback: Function) => {
 			Bucket: bucket,
 			Key: `${path}/${db}`,
 		}, (error, data) => {
-			console.log(error);
 			if (error) {
+				console.log(error);
 				callback();
 				return;
 			}
@@ -42,7 +42,7 @@ const lookupIp = (ip: string) => (callback: Function) => {
 	maxmind.open<CityResponse>(`/tmp/${db}`, (error, lookup) => {
 		if (error) {
 			console.log(error);
-			callback(null, true);
+			callback(null, error);
 			return;
 		}
 
@@ -52,53 +52,20 @@ const lookupIp = (ip: string) => (callback: Function) => {
 	});
 };
 
-exports.handler = (event: CloudFrontResponseEvent, context: Context, callback: Callback) => {
-	const { request, response } = event.Records[0].cf;
-	const headers = response.headers;
+exports.handler = (event: APIGatewayEvent, context: Context, callback: Callback) => {
+	const ip = event.pathParameters && event.pathParameters.proxy;
 
-	fetchDb(() => lookupIp(request.clientIp)( (result?: CityResponse, error?: boolean) => {
+	if (!ip) {
+		callback('No IP address provided.');
+		return;
+	}
+
+	fetchDb(() => lookupIp(ip)( (result?: CityResponse, error?: any) => {
 		if (error) {
-			callback(null, response);
+			callback(error);
 			return;
 		}
 
-		headers['x-client-location-timezone'] = [{
-			key: 'X-Client-Location-Timezone',
-			value: (result && result.location && result.location.time_zone) || '',
-		}];
-		headers['x-client-location-contintent'] = [{
-			key: 'X-Client-Location-Continent',
-			value: (result && result.continent && result.continent.code) || '',
-		}];
-		headers['x-client-location-country'] = [{
-			key: 'X-Client-Location-Country',
-			value: (result && result.country && result.country.iso_code) || '',
-		}];
-		headers['x-client-location-city'] = [{
-			key: 'X-Client-Location-City',
-			value: (result && result.city && result.city.names && result.city.names.en) || '',
-		}];
-		headers['x-client-location-latitude'] = [{
-			key: 'X-Client-Location-Latitude',
-			value: String((result && result.location && result.location.latitude) || ''),
-		}];
-		headers['x-client-location-longitude'] = [{
-			key: 'X-Client-Location-Longitude',
-			value: String((result && result.location && result.location.longitude) || ''),
-		}];
-		headers['x-client-location-postalcode'] = [{
-			key: 'X-Client-Location-PostalCode',
-			value: (result && result.postal && result.postal.code) || '',
-		}];
-		headers['x-client-location-region'] = [{
-			key: 'X-Client-Location-Region',
-			value: (result && result.subdivisions && result.subdivisions[0].iso_code) || '',
-		}];
-		headers['x-client-location-eu'] = [{
-			key: 'X-Client-Location-EU',
-			value: (result && result.country && result.country.is_in_european_union) ? '1' : '0',
-		}];
-
-		callback(null, response);
+		callback(null, result);
 	}));
 };
