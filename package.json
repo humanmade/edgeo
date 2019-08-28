@@ -1,12 +1,16 @@
 {
   "name": "edgeo",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Lambda@Edge function for adding geo location headers in viewer responses",
   "main": "build/index.js",
+  "config": {
+    "api_key": ""
+  },
   "scripts": {
-    "build-zip": "rm -rf node_modules lambda.zip && npm i --production && zip -r lambda.zip ./node_modules/ ./build/index.js",
+    "replace-env": "sed -i '.tmp' \"s/process.env.API_KEY/\\'$npm_package_config_api_key\\'/g\" build/index.js",
+    "build-zip": "rm -rf lambda.zip && npm run replace-env && zip -r lambda.zip ./build/index.js",
     "tsc": "tsc",
-    "test": "lambda-local --envfile .env -t 360 -l build/index.js -e tests/event.json"
+    "test": "lambda-local -t 360 -l build/index.js -e tests/event.json"
   },
   "author": "Robert O'Rourke",
   "license": "GPL-2.0-or-later",

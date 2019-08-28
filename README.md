@@ -29,8 +29,9 @@ This implementation requires [ip-api.com](https://ip-api.com), it is recommended
 After cloning this repo you will need to do the following:
 
 1. `npm install`
-2. `npm run tsc`
-3. `npm run build-zip`
+1. `npm run tsc`
+1. Add your API key to the `package.json` config section
+1. `npm run build-zip`
 
 You will then have a `lambda.zip` file ready to be uploaded to AWS. The file should be ~60kb and can be uploaded through the AWS console.
 
@@ -39,16 +40,8 @@ When configuring the lambda function use the following settings:
 - Handler: "build/index.handler"
 - Timeout: 5 seconds
 - Memory: 128mb
-- Environment variables:
-  - `API_KEY`: your ip-api.com if you have one. Free usage is 150 requests per minute per IP.
 
 ## Testing
-
-Optionally create a `.env` file and add the following environment variables:
-
-```
-API_KEY=<your ip-api.com API key>
-```
 
 Run `npm run test` to check the location headers are added.
 
