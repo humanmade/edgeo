@@ -1,23 +1,24 @@
 {
   "name": "edgeo",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Lambda@Edge function for adding geo location headers in viewer responses",
-  "main": "build/index.js",
-  "config": {
-    "api_key": ""
-  },
+  "main": "build/edge.js",
   "scripts": {
-    "replace-env": "sed -i '.tmp' \"s/process.env.API_KEY/\\'$npm_package_config_api_key\\'/g\" build/index.js",
-    "build-zip": "rm -rf lambda.zip && npm run replace-env && zip -r lambda.zip ./build/index.js",
     "tsc": "tsc",
-    "test": "lambda-local -t 360 -l build/index.js -e tests/event.json"
+    "deploy": "tsc && sls deploy",
+    "test": "sls invoke -f edge -p tests/cf-event.json"
   },
   "author": "Robert O'Rourke",
   "license": "GPL-2.0-or-later",
   "devDependencies": {
     "@types/aws-lambda": "^8.10.31",
     "@types/node": "^12.7.2",
+    "aws-sdk": "^2.519.0",
     "lambda-local": "^1.6.3",
+    "serverless": "^1.51.0",
     "typescript": "^3.5.3"
+  },
+  "dependencies": {
+    "maxmind": "^3.1.2"
   }
 }

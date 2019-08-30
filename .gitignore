@@ -1,4 +1,5 @@
 node_modules
 build
-lambda.zip
+*.zip
 .env
+.serverless

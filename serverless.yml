@@ -1,0 +1,63 @@
+service:
+  name: edgeo
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  stage: ${opt:stage, 'dev'} # Set the default stage used. Default is dev
+  region: us-east-1 # Required for Lambda@Edge
+  stackName: edgeo # Use a custom name for the CloudFormation stack
+  deploymentBucket:
+    name: ${opt:bucket, 'edgeo'} # Set an existing bucket using --bucket=<bucket name>
+  deploymentPrefix: lambda/edgeo
+  versionFunctions: true
+  iamRoleStatements: # IAM role statements so that services can be accessed in the AWS account
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource:
+        - '*'
+
+package:
+  individually: true
+  exclude:
+    - ./**
+
+functions:
+  edge:
+    name: edgeo-main
+    description: |
+      Lambda@Edge function for adding MaxMind location data
+      headers in CloudFront viewer responses
+    handler: build/edge.handler
+    timeout: 5
+    memorySize: 128
+    runtime: nodejs8.10
+    package:
+      include:
+        - build/edge.js
+  lookup:
+    name: edgeo-lookup
+    description: A geo IP lookup function, invoked by edgeo-main
+    handler: build/lookup.handler
+    timeout: 120
+    memorySize: 512
+    package:
+      include:
+        - build/lookup.js
+        - ./node_modules/maxmind/**
+        - ./node_modules/tiny-lru/**
+        - ./dbs/**
+
+resources:
+  Resources:
+    IamRoleLambdaExecution:
+      Type: "AWS::IAM::Role"
+      Properties:
+        AssumeRolePolicyDocument:
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+                  - edgelambda.amazonaws.com
