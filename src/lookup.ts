@@ -1,8 +1,8 @@
-import maxmind, { CityResponse } from 'maxmind';
+import maxmind, { CityResponse, Reader } from 'maxmind';
 import { Context, Callback } from 'aws-lambda';
 
 const lookupIp = async (ip: string): Promise<CityResponse | null> => {
-	const lookup = await maxmind.open<CityResponse>(`./dbs/${process.env.EDGEO_DB || 'GeoLite2-City.mmdb'}`);
+	const lookup: Reader<CityResponse> = await maxmind.open(`./dbs/${process.env.EDGEO_DB || 'GeoLite2-City.mmdb'}`);
 	const result = lookup.get(ip);
 	return result;
 };
